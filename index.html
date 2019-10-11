@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Stock watcher</title>
+<style>
+table,table tr th, table tr td { border:1px solid #ccc; }
+table { width: 100%; min-height: 20px; line-height: 20px; text-align: center; border-collapse: collapse;}
+*{
+	padding:0;
+	margin:0;
+}
+body{
+	font-size: 12px;
+}
+</style>
+</head>
+<body style="-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;">
+<script type="text/javascript">
+	function showChart(code) {
+		ipc.send("show_stock_chart", code);
+	}
+	const { ipcRenderer: ipc, remote, shell } = require("electron");
+	ipc.send("update_stock_info");
+	ipc.on("stock_info_latest", function(event, stock_info) {
+		let stockStr = '';
+		stock_info.forEach((info) => {
+			let priceColor = "black";
+			if(info.price > info.close_yesterday) {
+				priceColor = 'red';
+			}else if(info.price < info.close_yesterday){
+				priceColor = 'green';
+			}
+			let price_change_color = 'black';
+			if(info.price_change > 0) {
+				price_change_color = 'red';
+			}else if(info.price_change < 0) {
+				price_change_color = 'green';
+			}
+			let openColor = "black";
+			if(info.open > info.close_yesterday) {
+				openColor = 'red';
+			}else if(info.open < info.close_yesterday){
+				openColor = 'green';
+			}
+			let highColor = "black";
+			if(info.high > info.close_yesterday) {
+				highColor = 'red';
+			}else if(info.high < info.close_yesterday){
+				highColor = 'green';
+			}
+			let lowColor = "black";
+			if(info.low > info.close_yesterday) {
+				lowColor = 'red';
+			}else if(info.low < info.close_yesterday){
+				lowColor = 'green';
+			}
+			stockStr += `<tr ondblclick="showChart('${info.code}');"><td>${info.code}</td>
+			<td>${info.name}</td>
+			<td style="color:${priceColor}">${info.price}</td>
+			<td style="color:${price_change_color}">${info.price_change.toFixed(2)}</td>
+			<td style="color:${price_change_color}">${info.price_change_percent.toFixed(2)}</td>
+			<td>${info.close_yesterday}</td>
+			<td style="color:${openColor}">${info.open}</td>
+			<td style="color:${highColor}">${info.high}</td>
+			<td style="color:${lowColor}">${info.low}</td>
+			<td>${info.time}</td></tr>`;
+		});
+		document.getElementById("stock_list").innerHTML= stockStr;
+		setTimeout(() => {
+			ipc.send("update_stock_info");
+		}, 3000);
+	});
+</script>
+<div>
+<table>
+<tr>
+	<td>代码</td>
+	<td>名称</td>
+	<td>当前价</td>
+	<td>涨跌额</td>
+	<td>涨跌幅</td>
+	<td>昨收</td>
+	<td>今开</td>
+	<td>最高</td>
+	<td>最低</td>
+	<td>时间</td>
+</tr>
+<tbody id="stock_list">
+</tbody>
+</table>
+</div>
+</body>
+</html>

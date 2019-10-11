@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chart</title>
+</head>
+<style type="text/css">
+  body{
+    text-align: center;
+    padding-top:15px;
+  }
+  img{
+    vertical-align: middle;
+  }
+</style>
+<body>
+<script type="text/javascript">
+  const params = new URLSearchParams(document.location.search);
+  let url = params.get("url");
+  document.write(`<img src="${url}" style="margin:0 auto;"/>`);
+</script>
+</body>
+</html>
