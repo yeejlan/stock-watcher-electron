@@ -20,7 +20,9 @@ const singleLock = app.requestSingleInstanceLock();
 const config = ini.parse(fs.readFileSync(path.join(__dirname, "config.ini"), 'utf-8'));
 
 let mainWindow: electron.BrowserWindow = null;
-let tray: any = null;
+let tray: Tray = null;
+
+require("electron-debug")({ showDevTools: false });
 
 app.on("second-instance", () => {
 	if (mainWindow) {

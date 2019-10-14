@@ -48,6 +48,7 @@ var singleLock = electron_1.app.requestSingleInstanceLock();
 var config = ini.parse(fs.readFileSync(path.join(__dirname, "config.ini"), 'utf-8'));
 var mainWindow = null;
 var tray = null;
+require("electron-debug")({ showDevTools: false });
 electron_1.app.on("second-instance", function () {
     if (mainWindow) {
         if (!mainWindow.isVisible())
